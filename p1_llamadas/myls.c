@@ -6,16 +6,17 @@
 #include <errno.h>              /* Header used for strerror and errno.*/
 
 int checkInvalid(DIR *mydir, char *argv[], int argc, int argument){
+  int result = 0;
   // If the directory doesn't exist or the path length is too long, input is invalid.
   if (mydir == NULL || strlen(argv[argument]) > PATH_MAX){
     // Print error message for the current argument.
     printf("myls: cannot access '%s': %s\n", argv[argument], strerror(errno));
     // It's invalid.
-    return 1;
   } else {
     // It's valid.
-    return 0;
+    result = -1;
   }
+  return result;
 }
 
 void printFiles(DIR *mydir){

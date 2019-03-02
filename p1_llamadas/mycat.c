@@ -4,7 +4,6 @@
 #include <fcntl.h>
 #include <unistd.h>             /* Cabecera llamadas al sistema read, write y close  */
 
-
 int main(int argc, char *argv[]){
      // open a file
      // read the content using 1024b intermediate buffer

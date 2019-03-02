@@ -5,6 +5,7 @@
 #include <dirent.h>
 #include <unistd.h>
 
+#include <stdlib.h>
 #include <errno.h>
 
 /*
@@ -20,28 +21,31 @@ TODO: CHECK FOR INPUT ERRORS, TEST, SEE REQUIREMENTS.
 */
 
 int main(int argc, char *argv[]){
-  int result = 0;
+  int result = -1;
   if (argc > 1){
-    printf("mysize: Error, argument introduced. errno: %i\n",strerror(errno));
-    result = -1;
+    printf("mysize: Argument introduced\n");
   } else {
     char buffer[PATH_MAX];
     DIR *mydir = opendir(getcwd(buffer, sizeof(buffer)));
     struct dirent *myfile;
     while((myfile = readdir(mydir)) != NULL){
-      // Open the file using open
-      int fd = open(myfile->d_name, O_RDWR, 0666);
+      // Open the file using open.
+      int fd = open(myfile->d_name, O_RDONLY, 0666);
       if (myfile->d_type == DT_REG){
-        // Move the pointer to the end counting its size
+        // Move the file pointer to the beginning of the file.
+        lseek(fd, 0, SEEK_SET);
+        // Move the pointer to the end of the file and count its size.
         int fileSize = lseek(fd,0,SEEK_END);
-        // close it (the file, not the dir)
+        // Close the file using the file descriptor.
         close(fd);
         // Print the data.
-        printf("%s\t%i\r\n", myfile->d_name, fileSize);
+        printf("%s\t%i\n\0", myfile->d_name, fileSize);
+        result = 0;
       }
     }
     // Close the directory.
     closedir(mydir);
   }
+  exit(result);
   return result;
 }
