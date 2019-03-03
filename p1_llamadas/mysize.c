@@ -20,7 +20,7 @@ int main(int argc, char *argv[]){
     struct dirent *myfile;
     while((myfile = readdir(mydir)) != NULL){
       // Open the file using open. Read only because we won't modify it.
-      int fd = open(myfile->d_name, O_RDONLY, 0666);
+      int fd = open(myfile->d_name, O_RDONLY);
       // We only check the size of files, not directories.
       if (myfile->d_type == DT_REG){
         // Move the file pointer to the beginning of the file.
@@ -37,6 +37,7 @@ int main(int argc, char *argv[]){
     // Close the directory.
     closedir(mydir);
   }
+  // We close the process and its context.
   exit(result);
   return result;
 }

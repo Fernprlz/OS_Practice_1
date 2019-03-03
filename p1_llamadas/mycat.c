@@ -43,16 +43,27 @@ int main(int argc, char *argv[]){
 			if (checkInvalid(argv[ii], myfile) < 0){
 				// An int holding the result of the read operation.
 				int readContent;
+				// An int holding the size of the written
+				int writtenContent;
 				// With a buffer this size we can read up to 1kb at a time.
 				char buffer[buffSize];
+				// Loop condition.
+				int loop = 1;
 				do{
 					// We empty the buffer on each interation.
 					memset(buffer, '\0', buffSize);
 					// We read the file and hold its content in the buffer.
 					readContent = read(myfile, buffer, buffSize);
 					// We write the output in the specified STDOUT_FILENO.
-					write(STDOUT_FILENO, buffer, buffSize);
-				}while(readContent > 0);
+					writtenContent = write(STDOUT_FILENO, buffer, readContent);
+					// We check for reading errors
+					if(readContent != writtenContent){
+						printf("mycat: Reading error\n");
+						result = -1;
+						// Break the loop
+						loop = 0;
+					}
+				}while(readContent > 0 && loop == 1);
 				// If we manage at least one valid execution, we call it a win.
 				result = 0;
 			}

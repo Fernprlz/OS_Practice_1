@@ -4,6 +4,7 @@
 #include <dirent.h>             /* Header used for the structure dirent.*/
 #include <string.h>             /* Header used for the utility function strlen.*/
 #include <stdlib.h>
+
 int buffSize = PATH_MAX;
 
 int checkInvalid(DIR *mydir, char *argument){
