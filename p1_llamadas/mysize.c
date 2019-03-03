@@ -4,33 +4,24 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <unistd.h>
-
 #include <stdlib.h>
-#include <errno.h>
 
-/*
-* - Obtain the current directory with getcwd();
-* - Read the entries of the directory using readdir
-* - IF ENTRY IS A REGULAR FIL (d_type from dirent == DT_REG)
-*   - Open the file using Open
-*   - Move the pointer to the end of the file and obtain value with lseek
-*   - Close file with Close
-*   - Print the name of the file (d_name of the structure)
-*   - Then followed by \t, size obtained and \r\n (End of line char).
-TODO: CHECK FOR INPUT ERRORS, TEST, SEE REQUIREMENTS.
-*/
+int buffSize = PATH_MAX;
 
 int main(int argc, char *argv[]){
   int result = -1;
+  // Only possible error is that an argument has been introduced.
   if (argc > 1){
     printf("mysize: Argument introduced\n");
   } else {
-    char buffer[PATH_MAX];
-    DIR *mydir = opendir(getcwd(buffer, sizeof(buffer)));
+    // We open the current working directory.
+    char buffer[buffSize];
+    DIR *mydir = opendir(getcwd(buffer, buffSize));
     struct dirent *myfile;
     while((myfile = readdir(mydir)) != NULL){
-      // Open the file using open.
+      // Open the file using open. Read only because we won't modify it.
       int fd = open(myfile->d_name, O_RDONLY, 0666);
+      // We only check the size of files, not directories.
       if (myfile->d_type == DT_REG){
         // Move the file pointer to the beginning of the file.
         lseek(fd, 0, SEEK_SET);
